@@ -57,3 +57,17 @@ func (cd *CategoryDB) CreateCategory(category *entities.Category) (string, error
 
 	return category.ID, nil
 }
+
+func (cd *CategoryDB) UpdateCategory(category *entities.Category) (*entities.Category, error) {
+	// todo
+
+	var newCategory entities.Category
+
+	return &newCategory, nil
+}
+
+func (cd *CategoryDB) DeleteCategory(id string) (string, error) {
+	// todo
+
+	return "", nil
+}
