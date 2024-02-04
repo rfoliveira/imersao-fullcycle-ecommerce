@@ -29,3 +29,11 @@ func (cs *CategoryService) CreateCategory(name string) (*entities.Category, erro
 	}
 	return category, nil
 }
+
+func (cs *CategoryService) GetCategory(id string) (*entities.Category, error) {
+	category, err := cs.CategoryDB.GetCategory(id)
+	if err != nil {
+		return nil, err
+	}
+	return category, nil
+}
