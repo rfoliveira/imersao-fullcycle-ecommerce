@@ -1,0 +1,14 @@
+GET http://localhost:3000/products HTTP/1.1
+
+###
+
+POST http://localhost:3000/products HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Product 1",    
+    "description": "Description for the product 1",
+    "image_url": "https://via.placeholder.com/150",
+    "price": 100
+}
+
