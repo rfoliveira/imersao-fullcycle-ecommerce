@@ -29,7 +29,7 @@ async function insertProducts(ds: DataSource) {
     const products = []
 
     for (let index = 1; index <= 10; index++) {
-        // Isso não funciona. Fica dizendo que UUID não éuma classe
+        // Isso não funciona. Fica dizendo que UUID não é uma classe
         // const _id = new UUID(`${index}`).toHexString();
         // console.log(_id);
 

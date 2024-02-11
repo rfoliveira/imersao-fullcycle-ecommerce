@@ -1,5 +1,5 @@
-import { Product } from "src/products/entities/product.entity";
-import { Column, CreateDateColumn, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { OrderItem } from "./order-item.entity";
 
 export enum OrderStatus {
     PENDING = 'pending',
@@ -7,6 +7,16 @@ export enum OrderStatus {
     FAILED = 'failed'
 }
 
+export type CreateOrderCommand = {
+    client_id: string;
+    items: {
+        product_id: string;
+        quantity: number;
+        price: number;
+    }[];
+}
+
+@Entity()
 export class Order {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -14,7 +24,7 @@ export class Order {
     @Column()
     total: number;
 
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 2})
     client_id: string;
 
     @Column()
@@ -22,25 +32,50 @@ export class Order {
 
     @CreateDateColumn()
     created_at: Date;
-}
 
-export class OrderItem {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @OneToMany(() => OrderItem, (item) => item.order)
+    items: OrderItem[];
 
-    @Column({type: 'int'})
-    quantity: number;
+    static create(input: CreateOrderCommand) {
+        const order = new Order();
+        order.client_id = input.client_id;
+        order.items = input.items.map(item => {
+            const orderItem = new OrderItem();
+
+            orderItem.product_id = item.product_id;
+            orderItem.quantity = item.quantity;
+            orderItem.price = item.price;
+
+            return orderItem;
+        });
+        order.total = order.items.reduce((sum, item) => {
+            return sum + item.price + item.quantity;
+        }, 0);
+
+        return order;
+    }
+
+    pay() {
+        if (this.status === OrderStatus.PAID) {
+          throw new Error('Order already paid');
+        }
     
-    @Column()
-    price: number;
+        if (this.status === OrderStatus.FAILED) {
+          throw new Error('Order already failed');
+        }
+    
+        this.status = OrderStatus.PAID;
+    }
 
-    @ManyToOne(() => Product)
-    @JoinColumn({ name: 'product_id' }) // padrão productId
-    product: Product;
-
-    @Column()
-    product_id: string;
-
-    @ManyToOne(() => Order)
-    order: Order;    
+    fail() {
+        if (this.status === OrderStatus.FAILED) {
+          throw new Error('Order already failed');
+        }
+    
+        if (this.status === OrderStatus.PAID) {
+          throw new Error('Order already paid');
+        }
+    
+        this.status = OrderStatus.FAILED;
+    }
 }

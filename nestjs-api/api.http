@@ -12,3 +12,24 @@ Content-Type: application/json
     "price": 100
 }
 
+### 
+
+GET http://localhost:3000/orders
+
+### 
+POST http://localhost:3000/orders HTTP/1.1
+Content-Type: : application/json
+
+{
+    "items": [
+        {
+            "product_id": "18464a66-62eb-482b-8e7f-da9fe0ef9f05",
+            "quantity": 1
+        },
+        {
+            "product_id": "42eeb7f1-c1f8-4df8-93fa-b10d2cdb1897",
+            "quantity": 1
+        }
+    ],
+    "card_hash": "123"
+}
